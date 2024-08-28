@@ -120,6 +120,7 @@ To run tests for the mobile app:
 3. To run tests with coverage and generate a coverage report:
    ```
    ./run_test_coverage.sh
+   ```
 
    This script will:
    - Run all tests with coverage
