@@ -14,4 +14,15 @@ class Offer {
     required this.originalPrice,
     required this.discountedPrice,
   });
+
+  factory Offer.empty() {
+    return Offer(
+      id: '',
+      title: '',
+      description: '',
+      discountPercentage: 0,
+      originalPrice: 0,
+      discountedPrice: 0,
+    );
+  }
 }

@@ -56,6 +56,7 @@ class MyApp extends StatelessWidget {
             '/': (context) => HomePage(),
             '/login': (context) => LoginPage(),
             '/offers': (context) => OfferListingPage(),
+            '/offer_details': (context) => OfferDetailsPage(offer: Offer.empty()),
             '/purchase_history': (context) => PurchaseHistoryPage(userId: RepositoryProvider.of<AuthService>(context).currentUser?.uid ?? ''),
           },
           onGenerateRoute: (settings) {
