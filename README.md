@@ -59,7 +59,52 @@ The project follows a clean architecture approach and consists of three main com
 ## Testing
 
 ### Backend
-- Run `npm test` in the `backend` directory
+To run tests for the backend:
+
+1. Navigate to the `backend` directory:
+   ```
+   cd backend
+   ```
+
+2. Install dependencies if you haven't already:
+   ```
+   npm install
+   ```
+3. Run all tests:
+   ```
+   npm test
+   ```
+4. To run specific test suites:
+- Unit tests: `npm run test:unit`
+- Integration tests: `npm run test:integration`
+- E2E tests: `npm run test:e2e`
+
+5. To run tests with coverage:
+   ```
+   npm run test:coverage
+   ```
+   This will generate a coverage report in the `coverage` directory.
+
+6. To view the coverage report in your browser:
+   ```
+   open coverage/lcov-report/index.html
+   
+This will open the HTML coverage report in your default web browser.
+
+### Troubleshooting Backend Tests
+
+- If you encounter any TypeScript-related errors, ensure your `tsconfig.json` is properly configured and includes Jest types:
+```json
+{
+ "compilerOptions": {
+   "types": ["jest", "node"]
+ }
+}
+```
+
+
+- If you're having issues with test environment setup, check your jest.config.ts file to ensure it's correctly configured for your project structure.
+- If you're using MongoDB for integration tests, ensure you have a local MongoDB instance running on port 27017.
 
 ### Mobile/Web App
 To run tests for the mobile app:
@@ -67,17 +112,15 @@ To run tests for the mobile app:
 1. Navigate to the `mobile_app` directory:
    ```
    cd mobile_app
-   ```
 
 2. Run all tests:
    ```
    flutter test
-   ```
 
 3. To run tests with coverage and generate a coverage report:
    ```
    ./run_test_coverage.sh
-   ```
+
    This script will:
    - Run all tests with coverage
    - Generate an HTML coverage report
@@ -88,7 +131,6 @@ To run tests for the mobile app:
    Note: Make sure the `run_test_coverage.sh` script is executable. If it's not, run:
    ```
    chmod +x run_test_coverage.sh
-   ```
 
 4. To run a specific test file:
    ```
@@ -96,7 +138,6 @@ To run tests for the mobile app:
 5. To run integration tests:
    ```
    flutter test integration_test
-   ```
 
 ### Troubleshooting Tests
 
@@ -107,12 +148,10 @@ To run tests for the mobile app:
 - If tests are failing due to missing dependencies, run:
   ```
   flutter pub get
-  ```
 
 - If you're using Mockito and encounter issues with generated mocks, run:
   ```
   flutter pub run build_runner build
-  ```
 
 ## Assumptions and Limitations
 
