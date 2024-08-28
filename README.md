@@ -30,7 +30,7 @@ The project follows a clean architecture approach and consists of three main com
 1. Clone the repository:
    ```
    git clone https://github.com/nguyenhuutukhtn/offer_list_clean_architecture.git
-   cd <project-directory>
+   cd offer_list_clean_architecture
    ```
 
 2. Start the entire application stack using Docker Compose:
