@@ -10,22 +10,26 @@ class OfferCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 4,
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 offer.title,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 4),
               Text(
                 offer.description,
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -47,7 +51,7 @@ class OfferCard extends StatelessWidget {
                       Text(
                         '\$${offer.originalPrice.toStringAsFixed(2)}',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                           decoration: TextDecoration.lineThrough,
                           color: Colors.grey,
                         ),
@@ -55,14 +59,14 @@ class OfferCard extends StatelessWidget {
                     ],
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
                       color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       '${offer.discountPercentage.toStringAsFixed(0)}% OFF',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],

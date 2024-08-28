@@ -15,58 +15,167 @@ class OfferDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(offer.title),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {
-              _showEditOfferForm(context);
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () {
-              _showDeleteConfirmationDialog(context);
-            },
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            foregroundColor: Colors.white,
+            expandedHeight: 200.0,
+            floating: false,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(offer.title, style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                shadows: <Shadow>[
+                  Shadow(
+                    offset: Offset(1.0, 1.0),
+                    blurRadius: 3.0,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
+                ],
+                color: Colors.white
+              ),),
+              background: Image.asset(
+                'assets/drawer_header_bg.jpg',
+                fit: BoxFit.cover,
+              ),
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {
+                  _showEditOfferForm(context);
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  _showDeleteConfirmationDialog(context);
+                },
+              ),
+            ],
+            ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    child: Card(
+                    
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              'Description',
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              offer.description,
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Card(
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Pricing Details',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Original Price:', style: TextStyle(fontSize: 16)),
+                              Text('\$${offer.originalPrice.toStringAsFixed(2)}',
+                                  style: TextStyle(fontSize: 16, decoration: TextDecoration.lineThrough)),
+                            ],
+                          ),
+                          SizedBox(height: 4),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Discounted Price:', style: TextStyle(fontSize: 16)),
+                              Text('\$${offer.discountedPrice.toStringAsFixed(2)}',
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green)),
+                            ],
+                          ),
+                          SizedBox(height: 4),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Discount:', style: TextStyle(fontSize: 16)),
+                              Text('${offer.discountPercentage.toStringAsFixed(0)}%',
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.red)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  BlocConsumer<PurchaseBloc, PurchaseState>(
+                    listener: (context, state) {
+                      if (state is PurchaseSuccess) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Purchase successful!'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      } else if (state is PurchaseFailure) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Purchase failed: ${state.message}'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is PurchaseLoading) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      return Container(
+                        padding: EdgeInsets.symmetric(horizontal: 48),
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            
+                          ),
+                          child: Text('Buy Now', style: TextStyle(fontSize: 18)),
+                          onPressed: () => _showBuyNowDialog(context),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(offer.description),
-            SizedBox(height: 16),
-            Text('Original Price: \$${offer.originalPrice}'),
-            Text('Discounted Price: \$${offer.discountedPrice}'),
-            Text('Discount: ${offer.discountPercentage}%'),
-            SizedBox(height: 32),
-            BlocConsumer<PurchaseBloc, PurchaseState>(
-              listener: (context, state) {
-                if (state is PurchaseSuccess) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Purchase successful!')),
-                  );
-                } else if (state is PurchaseFailure) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Purchase failed:')),
-                  );
-                }
-              },
-              builder: (context, state) {
-                if (state is PurchaseLoading) {
-                  return Center(child: CircularProgressIndicator());
-                }
-                return ElevatedButton(
-                  child: Text('Buy Now'),
-                  onPressed: () => _showBuyNowDialog(context),
-                );
-              },
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -75,6 +184,9 @@ class OfferDetailsPage extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (BuildContext context) {
         return SingleChildScrollView(
           child: Container(

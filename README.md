@@ -6,9 +6,9 @@ This project is a lightweight application that demonstrates full-stack developme
 
 Here are some screenshots of the application:
 
-| Login Screen | Offer List | Offer Details | Create Offer | Menu | Purchase History |
-|--------------|------------|---------------| --------------|------|------------------|
-| ![Login Screen](screenshots/login_screen.png) | ![Offer List](screenshots/offer_list.png) | ![Offer Details](screenshots/offer_details.png) | ![Create Offer](screenshots/create_offer.png) | ![Menu](screenshots/menu.png) | ![Purchase History](screenshots/purchase_history.png) |
+| Login Screen | Offer List | Offer Details | Create Offer | Menu | Purchase History | Create Account |
+|--------------|------------|---------------| --------------|------|------------------| --------------- |
+| ![Login Screen](screenshots/login_screen.jpg) | ![Offer List](screenshots/offer_list.jpg) | ![Offer Details](screenshots/offer_details.jpg) | ![Create Offer](screenshots/create_offer.jpg) | ![Menu](screenshots/menu.jpg) | ![Purchase History](screenshots/purchase_history.jpg) | ![Create Account](screenshots/create_account.jpg) |
 
 ## Architecture
 

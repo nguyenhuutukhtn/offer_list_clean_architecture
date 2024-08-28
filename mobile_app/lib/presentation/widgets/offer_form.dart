@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/presentation/bloc/offer_event.dart';
 import '../../domain/entities/offer.dart';
@@ -34,12 +35,21 @@ class _OfferFormState extends State<OfferForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
+    
       key: _formKey,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          TextFormField(
+          Text(
+            widget.offer == null ? 'Create New Offer' : 'Edit Offer',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20),
+          _buildTextField(
             controller: _titleController,
-            decoration: InputDecoration(labelText: 'Title'),
+            label: 'Title',
+            icon: Icons.title,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter a title';
@@ -47,9 +57,12 @@ class _OfferFormState extends State<OfferForm> {
               return null;
             },
           ),
-          TextFormField(
+          SizedBox(height: 16),
+          _buildTextField(
             controller: _descriptionController,
-            decoration: InputDecoration(labelText: 'Description'),
+            label: 'Description',
+            icon: Icons.description,
+            maxLines: 3,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter a description';
@@ -57,25 +70,31 @@ class _OfferFormState extends State<OfferForm> {
               return null;
             },
           ),
-          TextFormField(
+          SizedBox(height: 16),
+          _buildTextField(
             controller: _discountPercentageController,
-            decoration: InputDecoration(labelText: 'Discount Percentage'),
+            label: 'Discount Percentage',
+            icon: Icons.percent,
             keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter a discount percentage';
               }
-              final percentage = double.tryParse(value);
+              final percentage = int.tryParse(value);
               if (percentage == null || percentage < 0 || percentage > 100) {
                 return 'Please enter a valid percentage between 0 and 100';
               }
               return null;
             },
           ),
-          TextFormField(
+          SizedBox(height: 16),
+          _buildTextField(
             controller: _originalPriceController,
-            decoration: InputDecoration(labelText: 'Original Price'),
-            keyboardType: TextInputType.number,
+            label: 'Original Price',
+            icon: Icons.attach_money,
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))],
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter an original price';
@@ -87,10 +106,13 @@ class _OfferFormState extends State<OfferForm> {
               return null;
             },
           ),
-          TextFormField(
+          SizedBox(height: 16),
+          _buildTextField(
             controller: _discountedPriceController,
-            decoration: InputDecoration(labelText: 'Discounted Price'),
-            keyboardType: TextInputType.number,
+            label: 'Discounted Price',
+            icon: Icons.local_offer,
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))],
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter a discounted price';
@@ -103,33 +125,71 @@ class _OfferFormState extends State<OfferForm> {
               return null;
             },
           ),
-          SizedBox(height: 16),
+          SizedBox(height: 24),
           ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                final offer = Offer(
-                  id: widget.offer?.id ?? '',
-                  title: _titleController.text,
-                  description: _descriptionController.text,
-                  discountPercentage: double.parse(_discountPercentageController.text),
-                  originalPrice: double.parse(_originalPriceController.text),
-                  discountedPrice: double.parse(_discountedPriceController.text),
-                );
-
-                if (widget.offer == null) {
-                  BlocProvider.of<OfferBloc>(context).add(CreateOfferEvent(offer));
-                } else {
-                  BlocProvider.of<OfferBloc>(context).add(UpdateOfferEvent(offer));
-                }
-
-                Navigator.pop(context);
-              }
-            },
+            onPressed: _submitForm,
             child: Text(widget.offer == null ? 'Create Offer' : 'Update Offer'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(vertical: 16),
+              textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    int maxLines = 1,
+    TextInputType? keyboardType,
+    List<TextInputFormatter>? inputFormatters,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        filled: true,
+        fillColor: Colors.grey[200],
+      ),
+      maxLines: maxLines,
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
+      validator: validator,
+    );
+  }
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      final offer = Offer(
+        id: widget.offer?.id ?? '',
+        title: _titleController.text,
+        description: _descriptionController.text,
+        discountPercentage: double.parse(_discountPercentageController.text),
+        originalPrice: double.parse(_originalPriceController.text),
+        discountedPrice: double.parse(_discountedPriceController.text),
+      );
+
+      if (widget.offer == null) {
+        BlocProvider.of<OfferBloc>(context).add(CreateOfferEvent(offer));
+      } else {
+        BlocProvider.of<OfferBloc>(context).add(UpdateOfferEvent(offer));
+      }
+
+      Navigator.pop(context);
+    }
   }
 
   @override
