@@ -53,7 +53,6 @@ class _OfferListingPageState extends State<OfferListingPage> {
           }
         },
         builder: (context, state) {
-          print('state: $state');
           if (state is OfferInitial) {
             BlocProvider.of<OfferBloc>(context).add(GetOffersEvent());
             return Center(child: CircularProgressIndicator());

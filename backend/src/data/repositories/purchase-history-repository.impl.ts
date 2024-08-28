@@ -3,6 +3,7 @@ import { PurchaseHistoryRepository } from '../../domain/repositories/purchase-hi
 import { PurchaseHistoryModel, PurchaseHistoryDocument } from '../models/purchase-history.model';
 import { PurchaseHistory } from '../../domain/entities/purchase_history.entity';
 import { injectable } from 'inversify';
+import { Offer } from '../../domain/entities/offer.entity';
 
 @injectable()
 
@@ -15,17 +16,26 @@ export class PurchaseHistoryRepositoryImpl implements PurchaseHistoryRepository 
   async createPurchaseHistory(purchaseHistory: Omit<PurchaseHistory, 'id'>): Promise<PurchaseHistory> {
     const newPurchaseHistory = new PurchaseHistoryModel({
       ...purchaseHistory,
-      offerId: new mongoose.Types.ObjectId(purchaseHistory.offerId)
+      offerId: purchaseHistory.offer.id
     });
     const savedPurchaseHistory = await newPurchaseHistory.save();
+    await savedPurchaseHistory.populate('offerId');
     return this.toDomainEntity(savedPurchaseHistory);
   }
 
-  private toDomainEntity(doc: PurchaseHistoryDocument): PurchaseHistory {
+  private toDomainEntity(doc: PurchaseHistoryDocument & { offerId: any }): PurchaseHistory {
+    const offer = doc.offerId; // This will be the populated Offer document
     return new PurchaseHistory(
       doc._id.toString(),
       doc.userId,
-      doc.offerId.toString(),
+      new Offer(
+        offer._id.toString(),
+        offer.title,
+        offer.description,
+        offer.discountPercentage,
+        offer.originalPrice,
+        offer.discountedPrice
+      ),
       doc.purchaseDate
     );
   }

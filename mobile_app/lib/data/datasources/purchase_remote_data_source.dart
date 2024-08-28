@@ -26,7 +26,7 @@ class PurchaseRemoteDataSourceImpl implements PurchaseRemoteDataSource {
   @override
   Future<List<PurchaseHistoryModel>> getPurchaseHistory(String userId) async {
     final response = await client.get(
-      Uri.parse('$baseUrl/api/purchases/$userId'),
+      Uri.parse('$baseUrl/api/offers/history/$userId'),
       headers: await _getHeaders(),
     );
 
@@ -34,6 +34,7 @@ class PurchaseRemoteDataSourceImpl implements PurchaseRemoteDataSource {
       final List<dynamic> purchaseHistoryJson = json.decode(response.body);
       return purchaseHistoryJson.map((json) => PurchaseHistoryModel.fromJson(json)).toList();
     } else {
+
       throw ServerException();
     }
   }

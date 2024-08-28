@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/core/services/auth_service.dart';
 import 'package:mobile_app/domain/entities/offer.dart';
+import 'package:mobile_app/domain/usecases/get_purchase_history.dart';
 import 'package:mobile_app/presentation/bloc/authentication_bloc.dart';
 import 'package:mobile_app/presentation/bloc/offer_bloc.dart';
 import 'package:mobile_app/presentation/bloc/purchase_bloc.dart';
@@ -16,9 +17,7 @@ import 'presentation/pages/home_page.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  print('Starting app...');
   WidgetsFlutterBinding.ensureInitialized();
-  print('Initializing Firebase...');
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -33,6 +32,9 @@ class MyApp extends StatelessWidget {
       providers: [
          RepositoryProvider<AuthService>(
           create: (context) => di.sl<AuthService>(),
+        ),
+        RepositoryProvider<GetPurchaseHistory>(
+          create: (context) => di.sl<GetPurchaseHistory>(),
         ),
       ],
       child: MultiBlocProvider(

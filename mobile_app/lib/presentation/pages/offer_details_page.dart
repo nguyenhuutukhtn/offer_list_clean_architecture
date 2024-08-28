@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/presentation/bloc/offer_event.dart';
@@ -132,7 +133,7 @@ class OfferDetailsPage extends StatelessWidget {
               child: Text('Buy'),
               onPressed: () {
                 Navigator.of(context).pop();
-                String userId = 'current_user_id';
+                String userId = FirebaseAuth.instance.currentUser!.uid;
                 BlocProvider.of<PurchaseBloc>(context).add(PurchaseOfferEvent(offer, userId));
               },
             ),

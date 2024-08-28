@@ -27,7 +27,6 @@ class AuthService {
 
   Future<bool> checkAndSignInWithToken() async {
     final token = await getToken();
-    print(token);
     if (token != null) {
       return true;
     }
@@ -38,7 +37,6 @@ class AuthService {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password).then((value) async {
         final idToken = await value.user!.getIdToken();
-        print(idToken);
         if (idToken != null) {
           await saveToken(idToken);
         }

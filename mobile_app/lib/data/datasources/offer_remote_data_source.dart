@@ -45,14 +45,12 @@ class OfferRemoteDataSourceImpl implements OfferRemoteDataSource {
 
   @override
   Future<OfferModel> createOffer(OfferModel offer) async {
-    print(offer.toJson());
     final response = await client.post(
       Uri.parse('$baseUrl/api/offers'),
       headers: await _getHeaders(),
       body: json.encode(offer.toJson()),
     );
 
-    print(response.body);
 
     if (response.statusCode == 201) {
       return OfferModel.fromJson(json.decode(response.body));

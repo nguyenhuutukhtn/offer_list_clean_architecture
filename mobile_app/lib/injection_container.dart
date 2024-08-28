@@ -25,6 +25,9 @@ import 'presentation/bloc/authentication_bloc.dart';
 
 final sl = GetIt.instance;
 
+const BASE_DOMAIN = const String.fromEnvironment("domain", defaultValue: "");
+
+
 Future<void> init() async {
   // Use cases
   sl.registerLazySingleton(() => GetOffers(sl()));
@@ -63,14 +66,14 @@ Future<void> init() async {
   // Data sources
   sl.registerLazySingleton<OfferRemoteDataSource>(
     () => OfferRemoteDataSourceImpl(
-        client: sl(), authService: sl(), baseUrl: 'http://192.168.1.48:3000'),
+        client: sl(), authService: sl(), baseUrl: BASE_DOMAIN),
   );
   // sl.registerLazySingleton<OfferLocalDataSource>(
   //   () => OfferLocalDataSourceImpl(databaseHelper: sl()),
   // );
   sl.registerLazySingleton<PurchaseRemoteDataSource>(
     () => PurchaseRemoteDataSourceImpl(
-        client: sl(), authService: sl(), baseUrl: 'http://192.168.1.48:3000'),
+        client: sl(), authService: sl(), baseUrl: BASE_DOMAIN),
   );
 
   // Core

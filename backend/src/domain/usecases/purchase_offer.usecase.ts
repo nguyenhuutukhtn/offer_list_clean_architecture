@@ -25,7 +25,7 @@ export class PurchaseOfferUseCase implements UseCase<PurchaseOfferParams, void> 
 
     await this.purchaseHistoryRepository.createPurchaseHistory({
       userId: params.userId,
-      offerId: params.offerId,
+      offer: offer,
       purchaseDate: new Date(),
     });
   }
