@@ -2,6 +2,14 @@
 
 This project is a lightweight application that demonstrates full-stack development skills, including frontend and backend development, database management, and API integration.
 
+## Screenshots
+
+Here are some screenshots of the application:
+
+| Login Screen | Offer List | Offer Details | Create Offer | Menu | Purchase History |
+|--------------|------------|---------------|
+| ![Login Screen](screenshots/login_screen.png) | ![Offer List](screenshots/offer_list.png) | ![Offer Details](screenshots/offer_details.png) | ![Create Offer](screenshots/create_offer.png) | ![Menu](screenshots/menu.png) | ![Purchase History](screenshots/purchase_history.png) |
+
 ## Architecture
 
 The project follows a clean architecture approach and consists of three main components:
