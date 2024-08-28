@@ -48,6 +48,8 @@ folders_to_read = [
     # 'lib',
     # 'test',
     'lib',
+    'test',
+    'integration_test'
 
 ]
 

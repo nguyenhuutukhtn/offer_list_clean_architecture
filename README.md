@@ -58,8 +58,61 @@ The project follows a clean architecture approach and consists of three main com
 
 ## Testing
 
-- Backend: Run `npm test` in the `backend` directory
-- Mobile/Web App: Run `flutter test` in the `mobile_app` directory
+### Backend
+- Run `npm test` in the `backend` directory
+
+### Mobile/Web App
+To run tests for the mobile app:
+
+1. Navigate to the `mobile_app` directory:
+   ```
+   cd mobile_app
+   ```
+
+2. Run all tests:
+   ```
+   flutter test
+   ```
+
+3. To run tests with coverage and generate a coverage report:
+   ```
+   ./run_test_coverage.sh
+   ```
+   This script will:
+   - Run all tests with coverage
+   - Generate an HTML coverage report
+   - Attempt to open the report in your default web browser
+
+   If the report doesn't open automatically, you can find it at `coverage/html/index.html`.
+
+   Note: Make sure the `run_test_coverage.sh` script is executable. If it's not, run:
+   ```
+   chmod +x run_test_coverage.sh
+   ```
+
+4. To run a specific test file:
+   ```
+   flutter test test/path/to/test_file.dart
+5. To run integration tests:
+   ```
+   flutter test integration_test
+   ```
+
+### Troubleshooting Tests
+
+- If you encounter any issues with test coverage, ensure you have `lcov` installed on your system.
+  - For macOS: `brew install lcov`
+  - For Ubuntu/Debian: `sudo apt-get install lcov`
+
+- If tests are failing due to missing dependencies, run:
+  ```
+  flutter pub get
+  ```
+
+- If you're using Mockito and encounter issues with generated mocks, run:
+  ```
+  flutter pub run build_runner build
+  ```
 
 ## Assumptions and Limitations
 

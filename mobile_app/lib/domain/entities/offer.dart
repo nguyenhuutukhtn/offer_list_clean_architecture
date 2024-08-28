@@ -25,4 +25,22 @@ class Offer {
       discountedPrice: 0,
     );
   }
+
+  Offer copyWith({
+    String? id,
+    String? title,
+    String? description,
+    double? discountPercentage,
+    double? originalPrice,
+    double? discountedPrice,
+  }) {
+    return Offer(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      discountPercentage: discountPercentage ?? this.discountPercentage,
+      originalPrice: originalPrice ?? this.originalPrice,
+      discountedPrice: discountedPrice ?? this.discountedPrice,
+    );
+  }
 }

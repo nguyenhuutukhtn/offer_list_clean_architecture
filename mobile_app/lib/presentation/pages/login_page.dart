@@ -53,6 +53,7 @@ class LoginPage extends StatelessWidget {
                               children: [
                                 SizedBox(height: 16),
                                 TextFormField(
+                                  key: Key('emailField'),
                                   controller: _emailController,
                                   decoration: InputDecoration(
                                     labelText: 'Email',
@@ -65,6 +66,7 @@ class LoginPage extends StatelessWidget {
                                 ),
                                 SizedBox(height: 16),
                                 TextFormField(
+                                  key: Key('passwordField'),
                                   controller: _passwordController,
                                   decoration: InputDecoration(
                                     labelText: 'Password',
@@ -80,6 +82,7 @@ class LoginPage extends StatelessWidget {
                                   CircularProgressIndicator()
                                 else
                                   ElevatedButton(
+                                    key: Key('loginButton'),
                                     child: Text('Login'),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.blue,

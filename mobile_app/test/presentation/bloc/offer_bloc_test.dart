@@ -1,21 +1,22 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+import 'package:mockito/annotations.dart';
+import 'package:bloc_test/bloc_test.dart';
 import 'package:mobile_app/core/error/failures.dart';
+import 'package:mobile_app/core/usecases/usecase.dart';
 import 'package:mobile_app/domain/entities/offer.dart';
-import 'package:mobile_app/domain/usecases/create_offer.dart';
-import 'package:mobile_app/domain/usecases/delete_offer.dart';
 import 'package:mobile_app/domain/usecases/get_offers.dart';
+import 'package:mobile_app/domain/usecases/create_offer.dart';
 import 'package:mobile_app/domain/usecases/update_offer.dart';
+import 'package:mobile_app/domain/usecases/delete_offer.dart';
 import 'package:mobile_app/presentation/bloc/offer_bloc.dart';
 import 'package:mobile_app/presentation/bloc/offer_event.dart';
 import 'package:mobile_app/presentation/bloc/offer_state.dart';
-import 'package:mockito/mockito.dart';
-import 'package:bloc_test/bloc_test.dart';
-import 'package:dartz/dartz.dart';
 
-class MockGetOffers extends Mock implements GetOffers {}
-class MockCreateOffer extends Mock implements CreateOffer {}
-class MockUpdateOffer extends Mock implements UpdateOffer {}
-class MockDeleteOffer extends Mock implements DeleteOffer {}
+// Generate mock classes
+@GenerateMocks([GetOffers, CreateOffer, UpdateOffer, DeleteOffer])
+import 'offer_bloc_test.mocks.dart';
 
 void main() {
   late OfferBloc bloc;
@@ -29,7 +30,6 @@ void main() {
     mockCreateOffer = MockCreateOffer();
     mockUpdateOffer = MockUpdateOffer();
     mockDeleteOffer = MockDeleteOffer();
-
     bloc = OfferBloc(
       getOffers: mockGetOffers,
       createOffer: mockCreateOffer,
@@ -38,35 +38,32 @@ void main() {
     );
   });
 
-  final tOffer = Offer(
-    id: '1',
-    title: 'Test Offer',
-    description: 'Test Description',
-    discountPercentage: 10,
-    originalPrice: 100,
-    discountedPrice: 90,
-  );
+  tearDown(() {
+    bloc.close();
+  });
+
+  test('initial state should be OfferInitial', () {
+    expect(bloc.state, equals(OfferInitial()));
+  });
 
   group('GetOffersEvent', () {
-    test('initial state is OfferInitial', () {
-      expect(bloc.state, OfferInitial());
-    });
+    final tOffers = [Offer(id: '1', title: 'Test Offer', description: 'Test Description', discountPercentage: 10, originalPrice: 100, discountedPrice: 90)];
 
     blocTest<OfferBloc, OfferState>(
       'emits [OfferLoading, OfferLoaded] when GetOffersEvent is added and successful',
       build: () {
-        when(mockGetOffers(any)).thenAnswer((_) async => Right([tOffer]));
+        when(mockGetOffers(any)).thenAnswer((_) async => Right(tOffers));
         return bloc;
       },
       act: (bloc) => bloc.add(GetOffersEvent()),
       expect: () => [
         OfferLoading(),
-        OfferLoaded([tOffer]),
+        OfferLoaded(tOffers),
       ],
     );
 
     blocTest<OfferBloc, OfferState>(
-      'emits [OfferLoading, OfferError] when GetOffersEvent is added and fails',
+      'emits [OfferLoading, OfferError] when GetOffersEvent is added and unsuccessful',
       build: () {
         when(mockGetOffers(any)).thenAnswer((_) async => Left(ServerFailure()));
         return bloc;
@@ -74,10 +71,10 @@ void main() {
       act: (bloc) => bloc.add(GetOffersEvent()),
       expect: () => [
         OfferLoading(),
-        OfferError('Server failure'),
+        OfferError('Server failure. Please try again later.'),
       ],
     );
   });
 
-  // Add similar tests for CreateOfferEvent, UpdateOfferEvent, and DeleteOfferEvent
+  // Add more tests for other events (CreateOfferEvent, UpdateOfferEvent, DeleteOfferEvent)
 }
