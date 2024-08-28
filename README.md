@@ -7,7 +7,7 @@ This project is a lightweight application that demonstrates full-stack developme
 Here are some screenshots of the application:
 
 | Login Screen | Offer List | Offer Details | Create Offer | Menu | Purchase History |
-|--------------|------------|---------------|
+|--------------|------------|---------------| --------------|------|------------------|
 | ![Login Screen](screenshots/login_screen.png) | ![Offer List](screenshots/offer_list.png) | ![Offer Details](screenshots/offer_details.png) | ![Create Offer](screenshots/create_offer.png) | ![Menu](screenshots/menu.png) | ![Purchase History](screenshots/purchase_history.png) |
 
 ## Architecture
