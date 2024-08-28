@@ -1,16 +1,20 @@
 # Offer Listing Mobile App
 
-This project is a lightweight mobile application that demonstrates full-stack development skills, including frontend and backend development, database management, and API integration.
+This project is a lightweight application that demonstrates full-stack development skills, including frontend and backend development, database management, and API integration.
 
 ## Architecture
 
-The project follows a clean architecture approach and consists of two main components:
+The project follows a clean architecture approach and consists of three main components:
 
 1. Mobile App (Flutter)
    - Uses clean architecture with layers: presentation, domain, and data
    - Implements BLoC pattern for state management
 
-2. Backend (Express.js with MongoDB)
+2. Web Frontend (Flutter Web)
+   - Shares codebase with the mobile app
+   - Served via Nginx in Docker
+
+3. Backend (Express.js with MongoDB)
    - RESTful API for offer management
    - MongoDB for data storage
 
@@ -19,59 +23,49 @@ The project follows a clean architecture approach and consists of two main compo
 ### Prerequisites
 
 - Docker and Docker Compose
-- Flutter SDK (for local development)
-- Node.js and npm (for local development)
+- Flutter SDK (for local mobile app development)
 
 ### Running the Application
 
 1. Clone the repository:
    ```
-   git clone <repository-url>
+   git clone https://github.com/nguyenhuutukhtn/offer_list_clean_architecture.git
    cd <project-directory>
    ```
 
-2. Start the application using Docker Compose:
+2. Start the entire application stack using Docker Compose:
    ```
    docker-compose up --build
    ```
 
-3. The backend API will be available at `http://localhost:3000`
+3. Access the application:
+   - Web Frontend: Open `http://localhost:8080` in your browser
+   - Backend API: Available at `http://localhost:3000`
 
-4. The mobile app will be built and available as an APK in the `mobile_app/build/app/outputs/flutter-apk/` directory.
-
-### Local Development
-
-For local development without Docker:
-
-1. Backend:
-   ```
-   cd backend
-   npm install
-   npm start
-   ```
-
-2. Mobile App:
+4. To run the Flutter mobile app for local development:
    ```
    cd mobile_app
-   flutter pub get
-   flutter run
+   flutter run --dart-define=API_URL=http://localhost:3000
    ```
 
 ## Testing
 
 - Backend: Run `npm test` in the `backend` directory
-- Mobile App: Run `flutter test` in the `mobile_app` directory
+- Mobile/Web App: Run `flutter test` in the `mobile_app` directory
 
 ## Assumptions and Limitations
 
-- The mobile app is currently built for Android only
-- The backend assumes a simple authentication mechanism (not implemented in this version)
-- Error handling and input validation are basic and can be improved
+- The web frontend and mobile app share the same codebase
+- The backend uses a simple authentication mechanism with Firebase
+- The project is designed for local development and demonstration purposes
+- Docker setup is optimized for development, not production deployment
 
 ## Future Improvements
 
-- Implement user authentication and authorization
-- Add more comprehensive error handling and input validation
-- Implement caching mechanisms for better performance
-- Add pagination for the offer listing
-- Implement push notifications for new offers
+- Implement more comprehensive error handling and input validation
+- Add caching mechanisms for better performance
+- Implement pagination for the offer listing
+- Add push notifications for new offers
+- Enhance the UI/UX design
+- Implement more advanced authentication and authorization mechanisms
+- Optimize Docker setup for production deployment

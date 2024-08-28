@@ -25,7 +25,7 @@ import 'presentation/bloc/authentication_bloc.dart';
 
 final sl = GetIt.instance;
 
-const BASE_DOMAIN = const String.fromEnvironment("domain", defaultValue: "");
+const BASE_DOMAIN = const String.fromEnvironment("API_URL", defaultValue: "http://localhost:3000");
 
 
 Future<void> init() async {

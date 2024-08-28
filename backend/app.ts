@@ -7,25 +7,24 @@ import { PurchaseController } from './src/presentation/controllers/purchase.cont
 import { offerRouter } from './src/presentation/routes/offer.routes';
 import * as admin from 'firebase-admin';
 import cors from 'cors';
-import { applicationDefault } from "firebase-admin/app";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/offerDB';
 
 // Enable CORS for all routes
 app.use(cors());
 
 app.use(express.json());
 
-mongoose.connect('mongodb://localhost:27017/', {
+mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 } as mongoose.ConnectOptions);
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
-  //credential to json file
-  // credential: admin.credential.cert('offerlist-433816-acd3f7909083.json'),
   projectId: 'offer-list-project',
   databaseURL: 'https://offer-list-project-default-rtdb.firebaseio.com',
   // Add other configuration options as needed

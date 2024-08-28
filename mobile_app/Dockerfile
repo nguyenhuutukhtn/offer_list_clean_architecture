@@ -1,12 +1,18 @@
-FROM cirrusci/flutter:stable
+FROM ghcr.io/cirruslabs/flutter:stable AS build
 
 WORKDIR /app
 
-COPY pubspec.* ./
-RUN flutter pub get
-
 COPY . .
 
-RUN flutter build apk --release
+ARG API_URL
 
-CMD ["flutter", "run", "--release"]
+RUN flutter pub get
+RUN flutter build web --release --dart-define=API_URL=$API_URL
+
+FROM nginx:alpine
+
+COPY --from=build /app/build/web /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

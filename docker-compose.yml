@@ -1,26 +1,43 @@
+version: '3'
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     depends_on:
-      - mongodb
+      - mongo
     environment:
-      - MONGODB_URI=mongodb://mongodb:27017/offerdb
+      - MONGODB_URI=mongodb://mongo:27017/offerDB
+    networks:
+      - app-network
 
-  mobile_app:
-    build: ./mobile_app
-    ports:
-      - "8080:8080"
-    depends_on:
-      - backend
-
-  mongodb:
+  mongo:
     image: mongo:latest
     ports:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./mobile_app
+      dockerfile: Dockerfile
+      args:
+        - API_URL=http://localhost:3000
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
 
 volumes:
   mongodb_data:
+
+networks:
+  app-network:
+    driver: bridge
