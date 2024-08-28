@@ -5,4 +5,5 @@ export interface OfferRepository {
   createOffer(offer: Offer): Promise<Offer>;
   updateOffer(offer: Offer): Promise<Offer>;
   deleteOffer(offerId: string): Promise<void>;
+  getOfferById(offerId: string): Promise<Offer | null>;
 }

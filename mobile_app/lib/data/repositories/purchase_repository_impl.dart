@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
+import 'package:mobile_app/data/datasources/purchase_remote_data_source.dart';
 import '../../domain/entities/purchase_history.dart';
 import '../../domain/repositories/purchase_repository.dart';
-import '../datasources/purchase_remote_data_source.dart';
 import '../../core/error/failures.dart';
 import '../../core/error/exceptions.dart';
 import '../../core/network/network_info.dart';

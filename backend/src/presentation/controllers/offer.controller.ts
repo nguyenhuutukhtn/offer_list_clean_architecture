@@ -1,13 +1,19 @@
 import { Request, Response } from 'express';
 import { GetOffersUseCase } from '../../domain/usecases/get-offers.usecase';
 import { CreateOfferUseCase } from '../../domain/usecases/create-offer.usecase';
+import { UpdateOfferUseCase } from '../../domain/usecases/update-offer.usecase';
+import { DeleteOfferUseCase } from '../../domain/usecases/delete-offer.usecase';
 import { Offer } from '../../domain/entities/offer.entity';
-import { NotFoundError } from '../../core/errors/app-error';
+import { ValidationError, NotFoundError } from '../../core/errors/app-error';
+import { injectable } from 'inversify';
 
+@injectable()
 export class OfferController {
   constructor(
     private getOffersUseCase: GetOffersUseCase,
-    private createOfferUseCase: CreateOfferUseCase
+    private createOfferUseCase: CreateOfferUseCase,
+    private updateOfferUseCase: UpdateOfferUseCase,
+    private deleteOfferUseCase: DeleteOfferUseCase
   ) {}
 
   async getOffers(req: Request, res: Response): Promise<void> {
@@ -33,7 +39,11 @@ export class OfferController {
       const createdOffer = await this.createOfferUseCase.execute(offer);
       res.status(201).json(createdOffer);
     } catch (error) {
-      res.status(400).json({ message: 'Error creating offer' });
+      if (error instanceof ValidationError) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: 'Error creating offer' });
+      }
     }
   }
 

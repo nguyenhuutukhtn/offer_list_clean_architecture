@@ -1,11 +1,17 @@
 import { Request, Response } from 'express';
-import { PurchaseOffer } from '../usecases/purchase-offer';
-import { ValidationError, NotFoundError } from '../errors/custom-errors';
-import PurchaseHistory from '../models/purchase-history.model';
-import Offer from '../models/offer.model';
+import { ValidationError, NotFoundError } from '../../core/errors/app-error';
+import { OfferModel } from '../../data/models/offer.model';
+import { PurchaseOfferUseCase } from '../../domain/usecases/purchase_offer.usecase';
+import { GetPurchaseHistoryUseCase } from '../../domain/usecases/get_purchase_history.usecase';
+import { injectable } from 'inversify';
+
+@injectable()
 
 export class PurchaseController {
-  constructor(private purchaseOffer: PurchaseOffer) {}
+  constructor(
+    private purchaseOfferUseCase: PurchaseOfferUseCase,
+    private getPurchaseHistoryUseCase: GetPurchaseHistoryUseCase
+  ) {}
 
   async purchaseOffer(req: Request, res: Response): Promise<void> {
     try {
@@ -15,19 +21,12 @@ export class PurchaseController {
         throw new ValidationError('User ID and Offer ID are required');
       }
 
-      const offer = await Offer.findById(offerId);
+      const offer = await OfferModel.findById(offerId);
       if (!offer) {
         throw new NotFoundError('Offer not found');
       }
 
-      await this.purchaseOffer.execute(userId, offerId);
-
-      // Store purchase history
-      const purchaseHistory = new PurchaseHistory({
-        userId,
-        offerId,
-      });
-      await purchaseHistory.save();
+      await this.purchaseOfferUseCase.execute({ userId, offerId });
 
       res.status(200).json({ message: 'Offer purchased successfully' });
     } catch (error) {
@@ -50,9 +49,7 @@ export class PurchaseController {
         throw new ValidationError('User ID is required');
       }
 
-      const purchaseHistory = await PurchaseHistory.find({ userId })
-        .populate('offerId')
-        .sort({ purchaseDate: -1 });
+      const purchaseHistory = await this.getPurchaseHistoryUseCase.execute(userId);
 
       res.status(200).json(purchaseHistory);
     } catch (error) {

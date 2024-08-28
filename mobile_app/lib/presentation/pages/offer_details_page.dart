@@ -50,7 +50,7 @@ class OfferDetailsPage extends StatelessWidget {
                   );
                 } else if (state is PurchaseFailure) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Purchase failed: ${state.error}')),
+                    SnackBar(content: Text('Purchase failed:')),
                   );
                 }
               },

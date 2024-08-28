@@ -1,17 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_app/core/utils/snackbar_util.dart';
 import 'package:mobile_app/presentation/bloc/offer_event.dart';
 import 'package:mobile_app/presentation/bloc/offer_state.dart';
+import '../../core/services/auth_service.dart';
 import '../bloc/offer_bloc.dart';
 import '../widgets/offer_card.dart';
 import '../widgets/offer_form.dart';
 import '../widgets/app_drawer.dart';
-import '../../core/services/auth_service.dart';
 
-class OfferListingPage extends StatelessWidget {
+class OfferListingPage extends StatefulWidget {
+  @override
+  State<OfferListingPage> createState() => _OfferListingPageState();
+}
+
+class _OfferListingPageState extends State<OfferListingPage> {
+
+  late AuthService authService;
+
+  @override
+  void initState() {
+    super.initState();
+     authService = RepositoryProvider.of<AuthService>(context);
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    final authService = RepositoryProvider.of<AuthService>(context);
+    
 
     return Scaffold(
       appBar: AppBar(
@@ -29,20 +45,15 @@ class OfferListingPage extends StatelessWidget {
       body: BlocConsumer<OfferBloc, OfferState>(
         listener: (context, state) {
           if (state is OfferError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            SnackbarUtil.showErrorSnackbar(context, state.message);
           } else if (state is OfferCreated || state is OfferUpdated) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Offer saved successfully')),
-            );
+            SnackbarUtil.showSuccessSnackbar(context, 'Offer saved successfully');
           } else if (state is OfferDeleted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Offer deleted successfully')),
-            );
+            SnackbarUtil.showSuccessSnackbar(context, 'Offer deleted successfully');
           }
         },
         builder: (context, state) {
+          print('state: $state');
           if (state is OfferInitial) {
             BlocProvider.of<OfferBloc>(context).add(GetOffersEvent());
             return Center(child: CircularProgressIndicator());
@@ -53,20 +64,27 @@ class OfferListingPage extends StatelessWidget {
               onRefresh: () async {
                 BlocProvider.of<OfferBloc>(context).add(GetOffersEvent());
               },
-              child: ListView.builder(
-                itemCount: state.offers.length,
-                itemBuilder: (context, index) {
-                  return OfferCard(
-                    offer: state.offers[index],
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/offer_details',
-                        arguments: state.offers[index],
+              child: Builder(
+                builder: (context) {
+                  if (state.offers.isEmpty) {
+                    return Center(child: Text('No offers available'));
+                  }
+                  return ListView.builder(
+                    itemCount: state.offers.length,
+                    itemBuilder: (context, index) {
+                      return OfferCard(
+                        offer: state.offers[index],
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/offer_details',
+                            arguments: state.offers[index],
+                          );
+                        },
                       );
                     },
                   );
-                },
+                }
               ),
             );
           } else if (state is OfferError) {

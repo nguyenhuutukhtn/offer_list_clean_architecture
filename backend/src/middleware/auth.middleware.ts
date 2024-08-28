@@ -1,6 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import * as admin from 'firebase-admin';
 
+declare global {
+  namespace Express {
+    interface Request {
+      user?: admin.auth.DecodedIdToken;
+    }
+  }
+}
+
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {

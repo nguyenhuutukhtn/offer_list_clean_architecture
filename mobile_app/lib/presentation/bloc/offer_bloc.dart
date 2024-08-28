@@ -28,38 +28,59 @@ class OfferBloc extends Bloc<OfferEvent, OfferState> {
 
   void _onGetOffers(GetOffersEvent event, Emitter<OfferState> emit) async {
     emit(OfferLoading());
-    final failureOrOffers = await getOffers(NoParams());
-    emit(failureOrOffers.fold(
-      (failure) => OfferError(_mapFailureToMessage(failure)),
-      (offers) => OfferLoaded(offers),
-    ));
+    try {
+      final failureOrOffers = await getOffers(NoParams());
+      emit(failureOrOffers.fold(
+        (failure) => OfferError(_mapFailureToMessage(failure)),
+        (offers) => OfferLoaded(offers),
+      ));
+    } catch (e) {
+      emit(OfferError('An unexpected error occurred: ${e.toString()}'));
+    }
   }
 
   void _onCreateOffer(CreateOfferEvent event, Emitter<OfferState> emit) async {
     emit(OfferLoading());
-    final failureOrOffer = await createOffer(CreateOfferParams(event.offer));
-    emit(failureOrOffer.fold(
-      (failure) => OfferError(_mapFailureToMessage(failure)),
-      (offer) => OfferCreated(offer),
-    ));
+    try {
+      final failureOrOffer = await createOffer(CreateOfferParams(event.offer));
+
+      emit(failureOrOffer.fold(
+        (failure) => OfferError(_mapFailureToMessage(failure)),
+        (offer) {
+          add(GetOffersEvent());
+          return OfferCreated(offer);},
+      ));
+    } catch (e) {
+      emit(OfferError('An unexpected error occurred: ${e.toString()}'));
+    }
   }
 
   void _onUpdateOffer(UpdateOfferEvent event, Emitter<OfferState> emit) async {
     emit(OfferLoading());
-    final failureOrOffer = await updateOffer(UpdateOfferParams(event.offer));
-    emit(failureOrOffer.fold(
-      (failure) => OfferError(_mapFailureToMessage(failure)),
-      (offer) => OfferUpdated(offer),
-    ));
+    try {
+      final failureOrOffer = await updateOffer(UpdateOfferParams(event.offer));
+      emit(failureOrOffer.fold(
+        (failure) => OfferError(_mapFailureToMessage(failure)),
+        (offer) {
+          add(GetOffersEvent());
+          return OfferUpdated(offer);},
+      ));
+    } catch (e) {
+      emit(OfferError('An unexpected error occurred: ${e.toString()}'));
+    }
   }
 
   void _onDeleteOffer(DeleteOfferEvent event, Emitter<OfferState> emit) async {
     emit(OfferLoading());
-    final failureOrVoid = await deleteOffer(event.offerId);
-    emit(failureOrVoid.fold(
-      (failure) => OfferError(_mapFailureToMessage(failure)),
-      (_) => OfferDeleted(),
-    ));
+    try {
+      final failureOrVoid = await deleteOffer(event.offerId);
+      emit(failureOrVoid.fold(
+        (failure) => OfferError(_mapFailureToMessage(failure)),
+        (_) => OfferDeleted(),
+      ));
+    } catch (e) {
+      emit(OfferError('An unexpected error occurred: ${e.toString()}'));
+    }
   }
 
   String _mapFailureToMessage(Failure failure) {
@@ -70,10 +91,6 @@ class OfferBloc extends Bloc<OfferEvent, OfferState> {
         return 'Network failure. Please check your internet connection.';
       case ValidationFailure:
         return (failure as ValidationFailure).message;
-      case AuthenticationFailure:
-        return 'Authentication failure. Please log in again.';
-      case CacheFailure:
-        return 'Cache failure. Please restart the app.';
       default:
         return 'Unexpected error. Please try again.';
     }

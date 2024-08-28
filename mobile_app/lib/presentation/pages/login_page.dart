@@ -18,7 +18,7 @@ class LoginPage extends StatelessWidget {
               SnackBar(content: Text(state.message)),
             );
           } else if (state is Authenticated) {
-            Navigator.of(context).pushReplacementNamed('/home');
+            Navigator.of(context).pushReplacementNamed('/offers');
           }
         },
         builder: (context, state) {
@@ -45,7 +45,7 @@ class LoginPage extends StatelessWidget {
                   ElevatedButton(
                     child: Text('Login'),
                     onPressed: () {
-                      if (_validateInputs()) {
+                      if (_validateInputs(context)) {
                         BlocProvider.of<AuthenticationBloc>(context).add(
                           LoginEvent(_emailController.text, _passwordController.text),
                         );
@@ -69,7 +69,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  bool _validateInputs() {
+  bool _validateInputs(BuildContext context) {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please fill in all fields')),

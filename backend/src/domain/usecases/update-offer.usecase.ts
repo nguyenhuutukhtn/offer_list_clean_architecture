@@ -1,10 +1,13 @@
+import { inject, injectable } from 'inversify';
 import { ValidationError } from '../../core/errors/app-error';
 import { UseCase } from '../../core/interfaces/use-case.interface';
 import { Offer } from '../entities/offer.entity';
 import { OfferRepository } from '../repositories/offer-repository.interface';
 
+@injectable()
+
 export class UpdateOfferUseCase implements UseCase<Offer, Offer> {
-  constructor(private offerRepository: OfferRepository) {}
+  constructor(@inject('OfferRepository') private offerRepository: OfferRepository) {}
 
   async execute(offer: Offer): Promise<Offer> {
     this.validateOffer(offer);

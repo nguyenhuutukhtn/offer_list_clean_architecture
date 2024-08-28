@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:mobile_app/core/network/network_info.dart';
 import 'package:mobile_app/data/datasources/offer_local_data_source.dart';
-import 'package:mobile_app/presentation/bloc/purchase_bloc.dart';
+import 'package:mobile_app/data/models/offer_model.dart';
 import '../../domain/entities/offer.dart';
 import '../../domain/repositories/offer_repository.dart';
 import '../datasources/offer_remote_data_source.dart';
@@ -11,13 +11,13 @@ import '../../core/error/exceptions.dart';
 
 class OfferRepositoryImpl implements OfferRepository {
   final OfferRemoteDataSource remoteDataSource;
-  final OfferLocalDataSource localDataSource;
+  // final OfferLocalDataSource localDataSource;
   final NetworkInfo networkInfo;
 
 
   OfferRepositoryImpl({
     required this.remoteDataSource,
-    required this.localDataSource,
+    // required this.localDataSource,
     required this.networkInfo,
   });
 
@@ -26,18 +26,19 @@ class OfferRepositoryImpl implements OfferRepository {
     if (await _isConnected()) {
       try {
         final remoteOffers = await remoteDataSource.getOffers();
-        localDataSource.cacheOffers(remoteOffers);
+        // localDataSource.cacheOffers(remoteOffers);
         return Right(remoteOffers);
       } on ServerException {
         return Left(ServerFailure());
       }
     } else {
-      try {
-        final localOffers = await localDataSource.getCachedOffers();
-        return Right(localOffers);
-      } on CacheException {
-        return Left(CacheFailure());
-      }
+      // try {
+      //   final localOffers = await localDataSource.getCachedOffers();
+      //   return Right(localOffers);
+      // } on CacheException {
+      //   return Left(CacheFailure());
+      // }
+      return Left(NetworkFailure());
     }
   }
 
@@ -45,7 +46,17 @@ class OfferRepositoryImpl implements OfferRepository {
   Future<Either<Failure, Offer>> createOffer(Offer offer) async {
     if (await _isConnected()) {
       try {
-        final remoteOffer = await remoteDataSource.createOffer(offer);
+        // Convert Offer to OfferModel
+        final offerModel = OfferModel(
+          id: offer.id,
+          title: offer.title,
+          description: offer.description,
+          discountPercentage: offer.discountPercentage,
+          originalPrice: offer.originalPrice,
+          discountedPrice: offer.discountedPrice,
+        );
+        
+        final remoteOffer = await remoteDataSource.createOffer(offerModel);
         return Right(remoteOffer);
       } on ServerException {
         return Left(ServerFailure());
@@ -59,7 +70,16 @@ class OfferRepositoryImpl implements OfferRepository {
   Future<Either<Failure, Offer>> updateOffer(Offer offer) async {
     if (await _isConnected()) {
       try {
-        final updatedOffer = await remoteDataSource.updateOffer(offer);
+        
+        final offerModel = OfferModel(
+          id: offer.id,
+          title: offer.title,
+          description: offer.description,
+          discountPercentage: offer.discountPercentage,
+          originalPrice: offer.originalPrice,
+          discountedPrice: offer.discountedPrice,
+        );
+        final updatedOffer = await remoteDataSource.updateOffer(offerModel);
         return Right(updatedOffer);
       } on ServerException {
         return Left(ServerFailure());

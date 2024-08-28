@@ -18,7 +18,7 @@ class RegistrationPage extends StatelessWidget {
               SnackBar(content: Text(state.message)),
             );
           } else if (state is Authenticated) {
-            Navigator.of(context).pushReplacementNamed('/home');
+            Navigator.of(context).pushReplacementNamed('/');
           }
         },
         builder: (context, state) {

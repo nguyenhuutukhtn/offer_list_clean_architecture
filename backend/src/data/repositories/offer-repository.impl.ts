@@ -1,6 +1,9 @@
 import { OfferRepository } from '../../domain/repositories/offer-repository.interface';
 import { Offer } from '../../domain/entities/offer.entity';
 import { OfferModel } from '../models/offer.model';
+import { injectable } from 'inversify';
+
+@injectable()
 
 export class OfferRepositoryImpl implements OfferRepository {
   async getOffers(): Promise<Offer[]> {
@@ -48,5 +51,21 @@ export class OfferRepositoryImpl implements OfferRepository {
     if (!result) {
       throw new Error('Offer not found');
     }
+  }
+
+  async getOfferById(offerId: string): Promise<Offer | null> {
+    const offer = await OfferModel
+      .findById(offerId);
+    if (!offer) {
+      return null;
+    }
+    return new Offer(
+      offer._id.toString(),
+      offer.title,
+      offer.description,
+      offer.discountPercentage,
+      offer.originalPrice,
+      offer.discountedPrice
+    );
   }
 }

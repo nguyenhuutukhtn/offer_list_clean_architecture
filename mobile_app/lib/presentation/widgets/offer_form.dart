@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_app/presentation/bloc/offer_event.dart';
 import '../../domain/entities/offer.dart';
 import '../bloc/offer_bloc.dart';
 
